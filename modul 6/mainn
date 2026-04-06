@@ -1,0 +1,40 @@
+package modul6;
+
+import java.time.LocalDate;
+
+public class Mainn {
+    public static void main(String[] args) {
+
+        // 1. Manusia
+        System.out.println("=== Manusia ===");
+        System.out.println(new Manusia("Budi", true, "123", true));
+        System.out.println();
+        System.out.println(new Manusia("Siti", false, "456", true));
+        System.out.println();
+        System.out.println(new Manusia("Joko", true, "789", false));
+
+        // 2. Mahasiswa FILKOM
+        System.out.println("\n=== Mahasiswa ===");
+        System.out.println(new MahasiswaFILKOM("A", true, "111", false, "165150600111", 2.9));
+        System.out.println();
+        System.out.println(new MahasiswaFILKOM("B", true, "222", false, "165150400222", 3.2));
+        System.out.println();
+        System.out.println(new MahasiswaFILKOM("C", true, "333", false, "165150700333", 3.8));
+
+        // 3. Pekerja
+        System.out.println("\n=== Pekerja ===");
+        System.out.println(new Pekerja("D", true, "444", true, 1000,
+                LocalDate.now().minusYears(2), 2));
+        System.out.println();
+        System.out.println(new Pekerja("E", true, "555", true, 1000,
+                LocalDate.now().minusYears(9), 0));
+        System.out.println();
+        System.out.println(new Pekerja("F", true, "666", true, 1000,
+                LocalDate.now().minusYears(20), 10));
+
+        // 4. Manager
+        System.out.println("\n=== Manager ===");
+        System.out.println(new Manager("G", true, "777", true, 7500,
+                LocalDate.now().minusYears(15), 0, "IT"));
+    }
+}
