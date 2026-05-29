@@ -1,0 +1,35 @@
+package rental;
+
+class Mobil extends Kendaraan {
+    private int jumlahKursi;
+
+    public Mobil(String kode, String nama, double hargaSewaPerHari, int jumlahKursi) {
+        super(kode, nama, hargaSewaPerHari);
+        this.jumlahKursi = jumlahKursi;
+    }
+
+    public int getJumlahKursi() {
+        return jumlahKursi;
+    }
+
+    @Override
+    public double hitungBiayaSewa(int lamaSewa) {
+        double total = lamaSewa * getHargaSewaPerHari();
+
+        // Tambahan biaya jika kursi > 5
+        if (jumlahKursi > 5) {
+            total += 50000;
+        }
+
+        return total;
+    }
+
+    @Override
+    public void tampilkanInfo() {
+        System.out.println("[MOBIL] Kode: " + getKode()
+                + " | Nama: " + getNama()
+                + " | Kursi: " + jumlahKursi
+                + " | Tarif: Rp" + getHargaSewaPerHari() + "/hari"
+                + " | Status: " + (isTersedia() ? "Tersedia" : "Tidak Tersedia"));
+    }
+}
