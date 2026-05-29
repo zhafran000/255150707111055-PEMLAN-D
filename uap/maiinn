@@ -1,0 +1,176 @@
+package rental;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Maiinn {
+    static ArrayList<Kendaraan> daftarKendaraan = new ArrayList<>();
+    static Scanner input = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        // Data awal kendaraan
+        daftarKendaraan.add(new Mobil("MBL01", "Toyota Avanza", 350000, 7));
+        daftarKendaraan.add(new Mobil("MBL02", "Daihatsu Sigra", 300000, 7));
+        daftarKendaraan.add(new Mobil("MBL03", "Honda Brio", 280000, 5));
+
+        daftarKendaraan.add(new Motor("MTR01", "Honda Vario", 80000, "Matik"));
+        daftarKendaraan.add(new Motor("MTR02", "Yamaha NMAX", 100000, "Matik"));
+        daftarKendaraan.add(new Motor("MTR03", "Kawasaki KLX", 90000, "Manual"));
+
+        int pilihan;
+
+        do {
+            System.out.println("\n====== MENU GO DRIVE RENTAL SYSTEM ======");
+            System.out.println("1. Tambah Kendaraan");
+            System.out.println("2. Tampilkan Daftar Armada");
+            System.out.println("3. Sewa Kendaraan");
+            System.out.println("4. Kembalikan Kendaraan");
+            System.out.println("5. Keluar");
+            System.out.print("Pilih menu: ");
+            pilihan = input.nextInt();
+            input.nextLine();
+
+            switch (pilihan) {
+                case 1:
+                    tambahKendaraan();
+                    break;
+
+                case 2:
+                    tampilkanKendaraan();
+                    break;
+
+                case 3:
+                    try {
+                        sewaKendaraan();
+                    } catch (KendaraanTidakTersediaException e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    }
+                    break;
+
+                case 4:
+                    kembalikanKendaraan();
+                    break;
+
+                case 5:
+                    System.out.println("Terima kasih!");
+                    break;
+
+                default:
+                    System.out.println("Menu tidak valid!");
+            }
+
+        } while (pilihan != 5);
+    }
+
+    // Tambah kendaraan
+    public static void tambahKendaraan() {
+        System.out.print("Masukkan jenis kendaraan (mobil/motor): ");
+        String jenis = input.nextLine();
+
+        System.out.print("Masukkan kode kendaraan: ");
+        String kode = input.nextLine();
+
+        System.out.print("Masukkan nama kendaraan: ");
+        String nama = input.nextLine();
+
+        System.out.print("Masukkan harga sewa per hari: ");
+        double harga = input.nextDouble();
+
+        input.nextLine();
+
+        if (jenis.equalsIgnoreCase("mobil")) {
+            System.out.print("Masukkan jumlah kursi: ");
+            int kursi = input.nextInt();
+
+            daftarKendaraan.add(new Mobil(kode, nama, harga, kursi));
+            System.out.println("[INFO] Mobil berhasil ditambahkan!");
+
+        } else if (jenis.equalsIgnoreCase("motor")) {
+            System.out.print("Masukkan jenis transmisi: ");
+            String transmisi = input.nextLine();
+
+            daftarKendaraan.add(new Motor(kode, nama, harga, transmisi));
+            System.out.println("[INFO] Motor berhasil ditambahkan!");
+        } else {
+            System.out.println("Jenis kendaraan tidak valid!");
+        }
+    }
+
+    // Tampilkan kendaraan
+    public static void tampilkanKendaraan() {
+        System.out.println("\n===== DAFTAR ARMADA GODRIVE =====");
+
+        for (Kendaraan kendaraan : daftarKendaraan) {
+            kendaraan.tampilkanInfo(); // Polymorphism
+        }
+    }
+
+    // Cari kendaraan
+    public static Kendaraan cariKendaraan(String kode) {
+        for (Kendaraan kendaraan : daftarKendaraan) {
+            if (kendaraan.getKode().equalsIgnoreCase(kode)) {
+                return kendaraan;
+            }
+        }
+        return null;
+    }
+
+    // Sewa kendaraan
+    public static void sewaKendaraan() throws KendaraanTidakTersediaException {
+
+        System.out.print("Masukkan kode kendaraan yang ingin disewa: ");
+        String kode = input.nextLine();
+
+        Kendaraan kendaraan = cariKendaraan(kode);
+
+        if (kendaraan == null || !kendaraan.isTersedia()) {
+            throw new KendaraanTidakTersediaException(
+                    "Kendaraan sedang disewa atau tidak ditemukan!");
+        }
+
+        System.out.print("Masukkan durasi sewa (hari): ");
+        int lamaSewa = input.nextInt();
+        input.nextLine();
+
+        System.out.print("Apakah Anda Member VIP? (y/n): ");
+        String vip = input.nextLine();
+
+        double total = kendaraan.hitungBiayaSewa(lamaSewa);
+
+        // Diskon VIP 10%
+        if (vip.equalsIgnoreCase("y")) {
+            total *= 0.9;
+        }
+
+        // Diskon > 7 hari
+        if (lamaSewa > 7) {
+            total *= 0.95;
+        }
+
+        kendaraan.setTersedia(false);
+
+        System.out.println("\n===== TRANSAKSI SEWA =====");
+        System.out.println("Kendaraan : " + kendaraan.getNama());
+        System.out.println("Kode      : " + kendaraan.getKode());
+        System.out.println("Durasi    : " + lamaSewa + " hari");
+        System.out.println("Total     : Rp" + total);
+        System.out.println("Status    : Berhasil Disewa");
+    }
+
+    // Kembalikan kendaraan
+    public static void kembalikanKendaraan() {
+
+        System.out.print("Masukkan kode kendaraan yang ingin dikembalikan: ");
+        String kode = input.nextLine();
+
+        Kendaraan kendaraan = cariKendaraan(kode);
+
+        if (kendaraan != null && !kendaraan.isTersedia()) {
+            kendaraan.setTersedia(true);
+            System.out.println("[INFO] Kendaraan berhasil dikembalikan.");
+        } else {
+            System.out.println("[ERROR] Kendaraan tidak ditemukan atau belum disewa.");
+        }
+    }
+}
