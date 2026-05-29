@@ -1,0 +1,42 @@
+package rental;
+
+abstract class Kendaraan {
+    private String kode;
+    private String nama;
+    private double hargaSewaPerHari;
+    private boolean tersedia;
+
+    public Kendaraan(String kode, String nama, double hargaSewaPerHari) {
+        this.kode = kode;
+        this.nama = nama;
+        this.hargaSewaPerHari = hargaSewaPerHari;
+        this.tersedia = true;
+    }
+
+    // Getter
+    public String getKode() {
+        return kode;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public double getHargaSewaPerHari() {
+        return hargaSewaPerHari;
+    }
+
+    public boolean isTersedia() {
+        return tersedia;
+    }
+
+    // Setter status
+    public void setTersedia(boolean tersedia) {
+        this.tersedia = tersedia;
+    }
+
+    // Abstract Method
+    public abstract double hitungBiayaSewa(int lamaSewa);
+
+    public abstract void tampilkanInfo();
+}
